@@ -182,6 +182,9 @@ export abstract class MapNode extends Mesh
 	public subdivide(): void
 	{
 		const maxZoom = this.mapView.maxZoom();
+		// 先计算与，后计算或
+		// 孩子节点已经大于0，不再分裂，当前缩放等级达到最大，不再分裂， 父节点不为空且子节点加载完毕，不再分裂，这里 最后一个判断应该不对
+		// 每次要么加载四个，要么不加载，不会出现三个或者两个、一个的情况，所以这种判断不太对。
 		if (this.children.length > 0 || this.level + 1 > maxZoom || this.parentNode !== null && this.parentNode.nodesLoaded < MapNode.childrens)
 		{
 			return;
@@ -206,7 +209,7 @@ export abstract class MapNode extends Mesh
 	 * Simplify node, remove all children from node, store them in cache.
 	 *
 	 * Reset the subdivided flag and restore the visibility.
-	 *
+	 * 分裂孩子的逆向调用
 	 * This base method assumes that the node implementation is based off Mesh and that the isMesh property is used to toggle visibility.
 	 */
 	public simplify(): void
@@ -240,7 +243,7 @@ export abstract class MapNode extends Mesh
 
 	/**
 	 * Load tile texture from the server.
-	 *
+	 * 加载材质
 	 * This base method assumes the existence of a material attribute with a map texture.
 	 */
 	public async loadData(): Promise<void>
@@ -294,7 +297,8 @@ export abstract class MapNode extends Mesh
 
 	/**
 	 * Increment the child loaded counter.
-	 *
+	 * 当所有子节点加载完毕后，调用此方法
+	 * 每个节点都有四个子节点
 	 * Should be called after a map node is ready for display.
 	 */
 	public nodeReady(): void

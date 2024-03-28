@@ -1303,7 +1303,7 @@ MapMartiniHeightNode.tileSize = 256;
 
 class MapView extends Mesh {
     constructor(root = MapView.PLANAR, provider = new OpenStreetMapsProvider(), heightProvider = null) {
-        super(undefined, new MeshBasicMaterial({ transparent: true, opacity: 0.0 }));
+        super(undefined, new MeshBasicMaterial({ transparent: true, opacity: 0.0, depthWrite: false, colorWrite: false }));
         this.lod = null;
         this.provider = null;
         this.heightProvider = null;

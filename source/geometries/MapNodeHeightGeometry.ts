@@ -6,11 +6,11 @@ export class MapNodeHeightGeometry extends BufferGeometry
 	/**
 	 * Map node geometry constructor.
 	 *
-	 * @param width - Width of the node.
-	 * @param height - Height of the node.
-	 * @param widthSegments - Number of subdivisions along the width.
-	 * @param heightSegments - Number of subdivisions along the height.
-	 * @param skirt - Skirt around the plane to mask gaps between tiles.
+	 * @param width - Width of the node. 一个节点的宽度 1
+	 * @param height - Height of the node.	一个节点的高度 1
+	 * @param widthSegments - Number of subdivisions along the width. 一个节点在宽度方向上的分割数 16
+	 * @param heightSegments - Number of subdivisions along the height.	一个节点在高度方向上的分割数 16
+	 * @param skirt - Skirt around the plane to mask gaps between tiles. 默认是true， skirtDepth默认是10，calculateNormals默认是true
 	 */
 	public constructor(width: number = 1.0, height: number = 1.0, widthSegments: number = 1.0, heightSegments: number = 1.0, skirt: boolean = false, skirtDepth: number = 10.0, imageData: ImageData = null, calculateNormals: boolean = true)
 	{
@@ -26,7 +26,7 @@ export class MapNodeHeightGeometry extends BufferGeometry
 		MapNodeGeometry.buildPlane(width, height, widthSegments, heightSegments, indices, vertices, normals, uvs);
 
 		const data = imageData.data;
-
+		// 设置高度值，同时该高度值体现在y轴上,图像数据data.length = 17*17*3 vertices.length = 17*17*3
 		for (let i = 0, j = 0; i < data.length && j < vertices.length; i += 4, j += 3) 
 		{
 			const r = data[i];
@@ -40,6 +40,7 @@ export class MapNodeHeightGeometry extends BufferGeometry
 		}
 
 		// Generate the skirt
+		// 设置裙边。
 		if (skirt)
 		{
 			MapNodeGeometry.buildSkirt(width, height, widthSegments, heightSegments, skirtDepth, indices, vertices, normals, uvs);

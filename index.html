@@ -1,8 +1,67 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="refresh" content="7; url='https://tentone.github.io/geo-three/docs/" />
-  </head>
-  <body>
-  </body>
+<head>
+	<title></title>
+	<style></style>
+</head>
+<body>
+	<!-- GUI -->
+	<canvas id="canvas" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;"></canvas>
+
+	<!-- Code -->
+  <script  src="./deps/three/build/three.js"></script>
+  <script  src="./deps/three/build/OrbitControls.js"></script>
+  <!-- <script  src="./deps/three/examples/jsm/controls/MapControls.js"></script> -->
+	<script  src="./build/geo-three.js"></script>
+
+  <script type="module">
+    var canvas = document.getElementById('canvas');
+
+var renderer = new THREE.WebGLRenderer({
+	canvas: canvas,
+	antialias: true
+});
+
+var scene = new THREE.Scene();
+scene.background = new THREE.Color(0.4, 0.4, 0.4, THREE.LinearSRGBColorSpace);
+
+var provider = new Geo.BingMapsProvider('', Geo.BingMapsProvider.AERIAL);
+
+var map = new Geo.MapView(Geo.MapView.PLANAR, provider);
+scene.add(map);
+map.updateMatrixWorld(true);
+
+var camera = new THREE.PerspectiveCamera(80, 1, 0.1, 1e12);
+
+var controls = new THREE.MapControls(camera, canvas);
+controls.minDistance = 1e1;
+controls.zoomSpeed = 2.0;
+
+var coords = Geo.UnitsUtils.datumsToSpherical(40.940119, -8.535589);
+controls.target.set(coords.x, 0, -coords.y);
+camera.position.set(0, 1000, 0);
+
+scene.add(new THREE.AmbientLight(0x777777));
+
+document.body.onresize = function()
+{
+	var width = window.innerWidth;
+	var height = window.innerHeight;
+	renderer.setSize(width, height);
+	camera.aspect = width / height;
+	camera.updateProjectionMatrix();
+};
+// @ts-ignore
+document.body.onresize();
+
+function animate()
+{
+	requestAnimationFrame(animate);
+
+	controls.update();
+	renderer.render(scene, camera);
+}
+animate();
+  </script>
+</body>
 </html>

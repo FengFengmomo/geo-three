@@ -103,14 +103,14 @@ export class MapView extends Mesh
 
 		this.provider = provider;
 		this.heightProvider = heightProvider;
-
+		// 设置根节点，准备开始分裂
 		this.setRoot(root);
 		this.preSubdivide();
 	}
 
 	/**
 	 * Ajust node configuration depending on the camera distance.
-	 *
+	 * 系统自动调用
 	 * Called everytime automatically before render by the renderer.
 	 */
 	public onBeforeRender: (renderer: WebGLRenderer, scene: Scene, camera: Camera, geometry: BufferGeometry, material: Material, group: Group)=> void = (renderer, scene, camera, geometry, material, group) => 
@@ -122,7 +122,7 @@ export class MapView extends Mesh
 	 * Set the root of the map view.
 	 *
 	 * Is set by the constructor by default, can be changed in runtime.
-	 *
+	 * 设置根节点，可以动态修改。
 	 * @param root - Map node to be used as root.
 	 */
 	public setRoot(root: (MapNode | number)): void
@@ -159,8 +159,8 @@ export class MapView extends Mesh
 			this.scale.copy(this.root.constructor.baseScale);
 
 			this.root.mapView = this;
-			this.add(this.root);
-			this.root.initialize();
+			this.add(this.root); // 将mapnode添加到mapview中
+			this.root.initialize(); // 将根mapnode初始化
 		}
 	}
 
@@ -168,6 +168,8 @@ export class MapView extends Mesh
 	 * Pre-subdivide map tree to create nodes of levels not available in the provider.
 	 * 
 	 * Checks for the minimum zoom level in the providers attached to the map view.
+	 * 如果数据提供者最小zoom为1，则预分裂只需要分裂到level1，如果为2，则需要分裂到level2
+	 * 同理如果minzoom最小为5，则直接会分裂到level5
 	 */
 	public preSubdivide(): void 
 	{
@@ -178,7 +180,7 @@ export class MapView extends Mesh
 				return;
 			}
 
-			node.subdivide();
+			node.subdivide(); // 创建当前节点的子节点，如level1下的level2四个节点
 
 			for (let i = 0; i < node.children.length; i++) 
 			{

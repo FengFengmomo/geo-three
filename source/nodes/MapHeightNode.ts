@@ -128,13 +128,13 @@ export class MapHeightNode extends MapNode
 				return;
 			}
 
-			const canvas = CanvasUtils.createOffscreenCanvas(this.geometrySize + 1, this.geometrySize + 1);
+			const canvas = CanvasUtils.createOffscreenCanvas(this.geometrySize + 1, this.geometrySize + 1); 
 
 			const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 			context.imageSmoothingEnabled = false;
 			context.drawImage(image, 0, 0, MapHeightNode.tileSize, MapHeightNode.tileSize, 0, 0, canvas.width, canvas.height);
 
-			const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+			const imageData = context.getImageData(0, 0, canvas.width, canvas.height); // 图像变成17*17像素
 
 			this.geometry = new MapNodeHeightGeometry(1, 1, this.geometrySize, this.geometrySize, true, 10.0, imageData, true);
 		}
